@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: wf-suspend-template
+spec:
+  entrypoint: steps-template
+  templates:
+    - name: steps-template
+      steps:
+      - - name: step1  # outer step
+          template: task-template
+        - name: step2  # inner step (single dash)
+          template: task-template 
+      - - name: delay
+          template: suspend-template
+      - - name: step4  # outer step
+          template: task-template
+
+    - name: task-template
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task - hello")
+
+    - name: suspend-template
+      suspend:
+        duration: "10s"

@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: wf-dag-template
+spec:
+  entrypoint: dag-template
+  templates:
+    - name: dag-template
+      dag:
+        tasks:
+          - name: task1
+            template: task-template
+          - name: task2
+            template: task-template 
+            dependencies: [task1]
+          - name: task3
+            template: task-template
+            dependencies: [task1]  # makes a binary branch pattern
+          - name: task4
+            template: task-template
+            dependencies: [task2, task3]  # closes dag with a diamond pattern
+
+    - name: task-template
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task - hello")

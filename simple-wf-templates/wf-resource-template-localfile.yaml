@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: wf-resource-tmpl-
+spec:
+  entrypoint: resource-template
+  templates:
+    - name: resource-template
+      resource:
+        action: create
+        manifest: ./wf-script-template.yaml

@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: wf-script-tmpl-
+spec:
+  entrypoint: script-template
+  templates:
+    - name: script-template
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("This script is embedded into the template and is executed")

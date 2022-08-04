@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: ex1-simple-flow-
+spec:
+  entrypoint: dag-flow
+  templates:
+    - name: dag-flow
+      dag:
+        tasks:
+          - name: taskA
+            template: taskA-template
+          - name: taskB1
+            template: taskB-template
+            dependencies: [taskA]
+          - name: taskB2
+            template: taskB-template
+            dependencies: [taskB1]
+          - name: taskB3
+            template: taskB-template
+            dependencies: [taskB2]
+          - name: taskC
+            template: taskC-template
+            dependencies: [taskA]
+          - name: taskD
+            template: taskD-template
+            dependencies: [taskB3, taskC]
+          - name: taskA2
+            template: taskA-template
+            dependencies: [taskD]
+
+
+    - name: taskA-template
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task A executed successfully with script template")
+    - name: taskB-template
+      container:
+        image: python:3.8-slim
+        command: [echo]
+        args: ["Task B executed successfully with container template"]
+    - name: taskC-template
+      resource:
+        action: create
+        manifest: |
+          apiVersion: argoproj.io/v1alpha1
+          kind: Workflow
+          metadata:
+            generateName: task-c-child-
+          spec:
+            entrypoint: script-template
+            templates:
+              - name: script-template
+                script:
+                  image: python:3.8-slim
+                  command: [python]
+                  source: |
+                    print("Task C executed with child proc using resource template")
+    - name: taskD-template
+      suspend:
+        duration: "5s"
