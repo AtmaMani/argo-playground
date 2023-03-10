@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: wf-steps-template-serial
+  name: wf-steps-template-serial2
 spec:
   entrypoint: steps-template
   templates:

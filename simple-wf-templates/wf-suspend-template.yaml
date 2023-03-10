@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: wf-suspend-template
+  name: wf-suspend-template2
 spec:
   entrypoint: steps-template
   templates:
